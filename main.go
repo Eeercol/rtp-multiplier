@@ -18,7 +18,6 @@ type Response struct {
 var (
 	rtp float64
 	p   float64
-	H   float64 = 100.0 // фиксируем большой выигрыш
 )
 
 func main() {
@@ -31,13 +30,14 @@ func main() {
 		os.Exit(1)
 	}
 
-	// Вероятность выпадения выигрыша
-	p = rtp / H
+	// Предварительно вычисляем вероятность p для H=101
+	H := 101.0
+	p = (9999.0 * rtp) / (H * (H - 1))
 
 	http.HandleFunc("/get", handleGet)
 
 	addr := ":64333"
-	log.Printf("Starting RTP service on %s with target RTP=%.4f (H=%.1f, p=%.6f)\n", addr, rtp, H, p)
+	log.Printf("Starting RTP service on %s with target RTP=%.4f (p=%.6f)\n", addr, rtp, p)
 	if err := http.ListenAndServe(addr, nil); err != nil {
 		log.Fatalf("Server failed: %v", err)
 	}
@@ -49,9 +49,9 @@ func handleGet(w http.ResponseWriter, r *http.Request) {
 	u := rand.Float64()
 	var result float64
 	if u < p {
-		result = H
+		result = 101.0
 	} else {
-		result = 0
+		result = 1.0
 	}
 
 	resp := Response{Result: result}
