@@ -96,7 +96,7 @@ func (s *RTPService) GetMultiplier() float64 {
 
 func main() {
 	var rtp float64
-	flag.Float64Var(&rtp, "rtp", 0.0, "target RTP value in (0,1.0] or higher")
+	flag.Float64Var(&rtp, "rtp", 0.0, "target RTP value in (0,1.0]")
 	flag.Parse()
 
 	if rtp <= 0.0 || rtp > 1.0 {
